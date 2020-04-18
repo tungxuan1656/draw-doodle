@@ -20,7 +20,7 @@
         App.ctx.strokeStyle = "#000000";
         App.ctx.lineWidth = 5;
         App.ctx.lineCap = "round";
-        App.socket = io.connect('https://draw-doodle-tx.herokuapp.com/socket.io/?EIO=4&transport=websocket');
+        App.socket = io();
         App.isDraw = true;
         App.timeOutInterval = undefined;
 

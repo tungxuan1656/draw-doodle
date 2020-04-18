@@ -8,6 +8,10 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
 var app = express();
+const PORT = process.env.PORT || 3000;
+var server = app.listen(PORT, function() {
+    console.log('Node app is running on port', PORT);
+});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -44,12 +48,7 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
-app.set('port', 4000);
-var server = app.listen(app.get('port'), function() {
-    console.log('Node app is running on port', app.get('port'));
-});
-var io;
-io = require("socket.io").listen(server);
+var io = require('socket.io')(server);
 var clients = [];
 var roundNumber = 3;
 var timeRound = 120;

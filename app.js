@@ -233,7 +233,9 @@ io.sockets.on("connection", function (socket) {
             });
             if (drawPoint == null || drawPoint == undefined) drawPoint = -1;
             drawPoint = (drawPoint * 2) / keys.length;
-            resultLastMatch[clients[currentIndexUser].name] = drawPoint;
+            if (clients.length > currentIndexUser) {
+                resultLastMatch[clients[currentIndexUser].name] = drawPoint;
+            }
             for (var i = 0; i < clients.length; i++) {
                 var point = resultLastMatch[clients[i].name];
                 if (point == null || point == undefined) point = 0;

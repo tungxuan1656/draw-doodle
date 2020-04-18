@@ -130,7 +130,7 @@
 
         function setLabelTimeout(timeRound, startTime) {
             $("#time-out").empty();
-            var time = parseInt(timeRound - (new Date().getTime() - startTime()) / 1000);
+            var time = parseInt(timeRound - (new Date().getTime() - startTime) / 1000);
             $("#time-out").append(time);
             if (time < 0) return;
             App.timeOutInterval = setTimeout(function() {

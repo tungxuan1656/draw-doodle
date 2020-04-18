@@ -20,7 +20,7 @@
         App.ctx.strokeStyle = "#000000";
         App.ctx.lineWidth = 5;
         App.ctx.lineCap = "round";
-        App.socket = io.connect('http://localhost:4000');
+        App.socket = io.connect('/');
         App.isDraw = true;
         App.timeOutInterval = undefined;
 

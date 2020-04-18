@@ -44,8 +44,12 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
+app.set('port', (process.env.PORT || 5000));
+var server = app.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'));
+});
 var io;
-io = require("socket.io").listen(4000);
+io = require("socket.io").listen(server);
 var clients = [];
 var roundNumber = 3;
 var timeRound = 120;

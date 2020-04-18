@@ -119,19 +119,22 @@
         App.socket.on("startMatch", function(data) {
             // refresh label time-out
             console.log(data.timeRound);
+            console.log(data.startTime);
             var timeRound = parseInt(data.timeRound);
+            var startTime = parseInt(data.startTime);
+            if (timeRound == null || timeRound == undefined) return;
             if (timeRound == null || timeRound == undefined) return;
             clearTimeout(App.timeOutInterval);
-            setLabelTimeout(timeRound);
+            setLabelTimeout(timeRound, startTime);
         });
 
-        function setLabelTimeout(time) {
+        function setLabelTimeout(timeRound, startTime) {
             $("#time-out").empty();
+            var time = parseInt(timeRound - (new Date().getTime() - startTime()) / 1000);
             $("#time-out").append(time);
-            time -= 1;
             if (time < 0) return;
             App.timeOutInterval = setTimeout(function() {
-                setLabelTimeout(time);
+                setLabelTimeout(timeRound, startTime);
             }, 1000);
         }
 

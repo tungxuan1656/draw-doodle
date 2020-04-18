@@ -232,7 +232,7 @@ io.sockets.on("connection", function (socket) {
                 drawPoint += resultLastMatch[key];
             });
             if (drawPoint == null || drawPoint == undefined) drawPoint = -1;
-            drawPoint = (drawPoint * 2) / keys.length;
+            drawPoint = parseInt((drawPoint * 2) / keys.length);
             if (clients.length > currentIndexUser) {
                 resultLastMatch[clients[currentIndexUser].name] = drawPoint;
             }
@@ -268,7 +268,7 @@ io.sockets.on("connection", function (socket) {
             reGrantDrawPermission(false);
             sendQuestion();
             console.log("start Match");
-            io.emit("startMatch", { timeRound: timeRound });
+            io.emit("startMatch", { timeRound: timeRound, startTime: startTimeMatch});
             appendNotification(clients[currentIndexUser].name + " đang vẽ!");
             resultLastMatch = {};
             clients.forEach((client) => {

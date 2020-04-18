@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+        <!-- One of the following themes -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.es5.min.js"></script>
+
+        <script type="text/javascript" src="./javascripts/jquery.event.drag-2.0.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./stylesheets/style.css" />
+
+        <title>HTML5 Canvas + Node.JS Socket.io</title>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-7 view-parent-canvas">
+                    <div id="view-canvas">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <div id="view-control" class="form-group form-inline">
+                        <button class="btn btn-primary mb-2 mr-sm-2" id="button-clear-all">Xoá</button>
+                        <label for="normal">Màu Sắc: </label>
+                        <div class="pickr-container">
+                            <div class="color-picker"></div>
+                        </div>
+                        <label for="" class="mr-sm-2">Độ rộng: </label>
+                        <input type="range" min="5" max="20" value="5" class="slider mr-sm-2" id="myRange">
+                    </div>
+                    <div id="host-control" class="form-group form-inline">
+                        <label for="round-number" class="mr-sm-2">Round: </label>
+                        <input type="number" name="round-number" id="round-number" min="1" max="20" autocomplete="off" class="mr-sm-5" value="3">
+                        <label for="time-round" class="mr-sm-2">Time Round:</label>
+                        <input type="number" name="time-round" id="time-round" min="20" max="300" autocomplete="off" class="mr-sm-5" value="90">
+                        <button class="btn btn-primary mr-sm-2" id="button-start">Bắt Đầu</button>
+                    </div>
+                    <script>
+                        $("#host-control").hide()
+                    </script>
+                </div>
+                <div class="col-sm-3">
+                    <div class="comment">
+                        <div class="question form-inline">
+                            <label for="" id="answer"></label>
+                            <label for="" id="time-out""></label>
+                        </div>
+                        <div id="cmts"></div>
+                        <form action="" class="form-inline text-input" id="form-comment">
+                            <input type="text" class="form-control mb-2 mr-sm-2" id="input" autocomplete="off"/>
+                            <button class="btn btn-primary mb-2" id="button-send" type="submit">
+                                Gửi
+                            </button>
+                        </form>
+                        <div id="execute" class="form-inline form-group">
+                            <input type="text" id="input-command">
+                            <button id="button-execute">Execute</button>
+                        </div>
+                        <script>
+                            $("#execute").hide();
+                        </script>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="container users" id="users-container"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="./javascripts/scripts.js"></script>
+    </body>
+</html>

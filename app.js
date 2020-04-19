@@ -52,7 +52,7 @@ var io = require('socket.io')(server);
 var http = require('http'); //importing http
 var timeOutKeepAlive = 0;
 var clients = [];
-var color = {color: "#ffffff"};
+var color = {color: "#000000"};
 var roundNumber = 3;
 var timeRound = 120;
 var startTimeMatch = new Date().getTime() / 1000;
@@ -432,6 +432,6 @@ io.sockets.on("connection", function (socket) {
                 console.log("Error: " + err.message);
             });
             startKeepAlive();
-        }, 30000);
+        }, 1200000);
     }
 });

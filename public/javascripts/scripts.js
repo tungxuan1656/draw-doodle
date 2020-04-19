@@ -18,7 +18,7 @@
         App.ctx = App.canvas.getContext("2d");
         App.ctx.fillStyle = "solid";
         App.ctx.strokeStyle = "#000000";
-        App.ctx.lineWidth = 5;
+        App.ctx.lineWidth = 2;
         App.ctx.lineCap = "round";
         App.socket = io();
         App.isDraw = true;
@@ -65,7 +65,7 @@
         });
 
         App.socket.on("changeColor", function(data) {
-            console.log(data.color);
+            // console.log(data.color);
             App.pickr.setColor(data.color);
             App.ctx.strokeStyle = data.color;
         });
@@ -79,13 +79,18 @@
         });
 
         App.socket.on("changeLineWidth", function(data) {
-            console.log(data.lineWidth);
+            // console.log(data.lineWidth);
             App.ctx.lineWidth = data.lineWidth;
             App.slider.val(data.lineWidth);
         });
 
         App.socket.on("changeHost", function(data) {
-            $("#host-control").show();
+            if (data.id == App.socket.id) {
+                $("#host-control").show();
+            }
+            else {
+                $("#host-control").hide();
+            }
         });
 
         App.socket.on("grantDrawPermission", function(data) {
@@ -105,21 +110,21 @@
         });
 
         App.socket.on("answerQuestion", function(data) {
-            console.log(data);
+            // console.log(data);
             $("#answer").empty();
             $("#answer").append(data.answer);
         });
 
         App.socket.on("answerHide", function(data) {
-            console.log(data);
+            // console.log(data);
             $("#answer").empty();
             $("#answer").append(data.answer);
         });
 
         App.socket.on("startMatch", function(data) {
             // refresh label time-out
-            console.log(data.timeRound);
-            console.log(data.startTime);
+            // console.log(data.timeRound);
+            // console.log(data.startTime);
             var timeRound = parseInt(data.timeRound);
             var startTime = parseInt(data.startTime);
             if (timeRound == null || timeRound == undefined) return;
@@ -175,14 +180,14 @@
 
                 // Input / output Options
                 interaction: {
-                    hex: true,
-                    rgba: true,
-                    hsla: true,
-                    hsva: true,
-                    cmyk: true,
-                    input: true,
-                    clear: true,
-                    save: true,
+                    hex: false,
+                    rgba: false,
+                    hsla: false,
+                    hsva: false,
+                    cmyk: false,
+                    input: false,
+                    clear: false,
+                    save: false,
                 },
             },
         });
@@ -195,27 +200,30 @@
         });
 
         App.pickr.on('init', instance => {
-            console.log('init', instance);
+            // console.log('init', instance);
         }).on('hide', instance => {
-            console.log('hide', instance);
+            if (App.isDraw == true) {
+                App.ctx.strokeStyle = color.toHEXA();
+                App.socket.emit("changeColor", {color: color.toHEXA().toString()});
+            }
         }).on('show', (color, instance) => {
-            console.log('show', color, instance);
+            // console.log('show', color, instance);
         }).on('save', (color, instance) => {
-            console.log('save', color, instance);
+            // console.log('save', color, instance);
             if (App.isDraw == true) {
                 App.ctx.strokeStyle = color.toHEXA();
                 App.socket.emit("changeColor", {color: color.toHEXA().toString()});
             }
         }).on('clear', instance => {
-            console.log('clear', instance);
+            // console.log('clear', instance);
         }).on('change', (color, instance) => {
-            console.log('change', color, instance);
+            App.pickr.setColor(color.toHEXA().toString());
         }).on('changestop', instance => {
-            console.log('changestop', instance);
+            // console.log('changestop', instance);
         }).on('cancel', instance => {
-            console.log('cancel', instance);
+            // console.log('cancel', instance);
         }).on('swatchselect', (color, instance) => {
-            console.log('swatchselect', color, instance);
+            // console.log('swatchselect', color, instance);
         });
 
         App.appendToCmts = function(element) {
@@ -282,7 +290,7 @@
             y = e.pageY;
             type = "dragend";
             sendDraw(x,y,type);
-            console.log("send dragend");
+            // console.log("send dragend");
         }
         $('#canvas')
         .on('mouseup', handle_mouseup)
@@ -293,7 +301,7 @@
 
     $("#button-clear-all").on("click", function() {
         if (App.isDraw == true) {
-            console.log("clear");
+            // console.log("clear");
             App.socket.emit("clear_all", {});
             App.clear_all();
         }
@@ -314,8 +322,27 @@
         App.socket.emit("execute", {"command": command});
     });
 
+    $("#button-pen").on("click", function() {
+        var pen = $("#button-pen");
+        var eraser = $("#button-eraser");
+
+        pen.removeClass("button-inactive");
+        eraser.addClass("button-inactive");
+        App.socket.emit("active-pen");
+    });
+
+    $("#button-eraser").on("click", function() {
+        var pen = $("#button-pen");
+        var eraser = $("#button-eraser");
+
+        eraser.removeClass("button-inactive");
+        pen.addClass("button-inactive");
+        App.socket.emit("active-eraser");
+    });
+
     $(function () {
-        console.log("init");
+        // console.log("init");
         return App.init();
     });
+
 })(window);

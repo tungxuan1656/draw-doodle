@@ -49,7 +49,10 @@ app.use(function (err, req, res, next) {
 module.exports = app;
 
 var io = require('socket.io')(server);
+var http = require('http'); //importing http
+var timeOutKeepAlive = 0;
 var clients = [];
+var color = {color: "#ffffff"};
 var roundNumber = 3;
 var timeRound = 120;
 var startTimeMatch = new Date().getTime() / 1000;
@@ -74,21 +77,25 @@ io.sockets.on("connection", function (socket) {
         var host = false;
         if (clients.length == 0) {
             host = true;
-            socket.emit("changeHost", {});
+            io.emit("changeHost", {id: socket.id});
         } else host = false;
         clients.push({ id: socket.id, socket: socket, name: data.name, point: data.point, host: host });
         console.log("Number of Clients:", clients.length);
         updateUsers();
         appendNotification("Người chơi mới: " + data.name);
         if (clients.length == 1) {
-            loadData(
-                function () {
-                    appendNotification("Load data success");
-                },
-                function () {
-                    appendNotification("Load data error");
-                }
-            );
+            download("https://gitlab.com/tungxuan1656/drawdoodle/-/raw/master/dataset?inline=false", "dataset.txt", function () {
+                appendNotification("download finish!");
+                loadData(
+                    function () {
+                        appendNotification("Load data success");
+                    },
+                    function () {
+                        appendNotification("Load data error");
+                    }
+                );
+            });
+            startKeepAlive();
         }
     });
 
@@ -144,7 +151,18 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("changeColor", function (data) {
+        color = data;
         socket.broadcast.emit("changeColor", data);
+    });
+
+    socket.on("active-pen", function() {
+        socket.io.emit("changeColor", color);
+        socket.io.emit("changeLineWidth", {lineWidth: 2});
+    });
+
+    socket.on("active-eraser", function() {
+        socket.io.emit("changeColor", {color: "#ffffff"});
+        socket.io.emit("changeLineWidth", {lineWidth: 30});
     });
 
     socket.on("changeLineWidth", function (data) {
@@ -159,13 +177,17 @@ io.sockets.on("connection", function (socket) {
                 name = clients[i].name;
                 clients.splice(i, 1);
                 if (i == 0 && clients.length != 0) {
-                    clients[0].socket.emit("changeHost", {});
+                    // clients[0].socket.emit("changeHost", {});
+                    io.emit("changeHost", {id: clients[0].socket.id});
                     clients[0].host = true;
                 }
             }
         }
         console.log("Number of Clients:", clients.length);
-        if (clients.length <= 0) isFinishGame = true;
+        if (clients.length <= 0) {
+            isFinishGame = true;
+            clearTimeout(timeOutKeepAlive);
+        }
         updateUsers();
         appendNotification("Người chơi đã thoát: " + name);
         delete resultLastMatch[name];
@@ -202,7 +224,8 @@ io.sockets.on("connection", function (socket) {
             appendNotification("Đã Kết Thúc Game!");
             reGrantDrawPermission(true);
             if (clients.length > 0) {
-                clients[0].socket.emit("changeHost", {});
+                // clients[0].socket.emit("changeHost", {});
+                io.emit("changeHost", {id: clients[0].socket.id});
             }
             console.log("Finish Game");
         } else {
@@ -217,7 +240,8 @@ io.sockets.on("connection", function (socket) {
         if (isFinishGame === true) {
             reGrantDrawPermission(true);
             if (clients.length > 0) {
-                clients[0].socket.emit("changeHost", {});
+                // clients[0].socket.emit("changeHost", {});
+                io.emit("changeHost", {id: clients[0].socket.id});
             }
             appendNotification("Đã Kết Thúc Game!");
             console.log("Finish Game");
@@ -353,6 +377,10 @@ io.sockets.on("connection", function (socket) {
                 }
             );
         }
+        if (data.command == "!gethostcontrol") {
+            console.log("Grant Host Control");
+            io.emit("changeHost", {id: socket.id});
+        }
     });
 
     socket.on("hold-connection", function () {
@@ -377,13 +405,36 @@ io.sockets.on("connection", function (socket) {
     }
 
     function download(dataurl, filename, completion) {
-        const http = require("https");
+        const https = require("https");
         const fs = require("fs");
 
         const file = fs.createWriteStream(filename);
-        const request = http.get(dataurl, function (response) {
+        const request = https.get(dataurl, function (response) {
             response.pipe(file);
             completion();
         });
+    }
+
+    function startKeepAlive() {
+        timeOutKeepAlive = setTimeout(function() {
+            var options = {
+                host: 'https://draw-doodle-tx.herokuapp.com',
+                port: 80,
+                path: '/'
+            };
+            http.get(options, function(res) {
+                res.on('data', function(chunk) {
+                    try {
+                        // optional logging... disable after it's working
+                        console.log("HEROKU RESPONSE: " + chunk);
+                    } catch (err) {
+                        console.log(err.message);
+                    }
+                });
+            }).on('error', function(err) {
+                console.log("Error: " + err.message);
+            });
+            startKeepAlive();
+        }, 20 * 60 * 1000);
     }
 });

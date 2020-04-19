@@ -192,3 +192,8 @@ canvas {
     padding: 15px;
     height: 60px;
 }
+
+.button-inactive {
+    background-color: #fdfdfd;
+    color: #a1a2a3;
+}

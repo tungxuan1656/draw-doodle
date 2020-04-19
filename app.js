@@ -151,7 +151,7 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("changeColor", function (data) {
-        color = data;
+        if (data.color.toLowerCase() != "#ffffff") { color = data; }
         socket.broadcast.emit("changeColor", data);
     });
 
@@ -423,7 +423,7 @@ io.sockets.on("connection", function (socket) {
                 res.on('data', function(chunk) {
                     try {
                         // optional logging... disable after it's working
-                        console.log("HEROKU RESPONSE: " + chunk);
+                        console.log("HEROKU RESPONSE, KEEP ALIVE SUCCESS");
                     } catch (err) {
                         console.log(err.message);
                     }

@@ -156,13 +156,13 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("active-pen", function() {
-        socket.io.emit("changeColor", color);
-        socket.io.emit("changeLineWidth", {lineWidth: 2});
+        io.emit("changeColor", color);
+        io.emit("changeLineWidth", {lineWidth: 2});
     });
 
     socket.on("active-eraser", function() {
-        socket.io.emit("changeColor", {color: "#ffffff"});
-        socket.io.emit("changeLineWidth", {lineWidth: 30});
+        io.emit("changeColor", {color: "#ffffff"});
+        io.emit("changeLineWidth", {lineWidth: 30});
     });
 
     socket.on("changeLineWidth", function (data) {

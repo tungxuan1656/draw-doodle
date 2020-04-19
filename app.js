@@ -156,6 +156,7 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("active-pen", function() {
+        console.log("active pen", color);
         io.emit("changeColor", color);
         io.emit("changeLineWidth", {lineWidth: 2});
     });
@@ -416,13 +417,9 @@ io.sockets.on("connection", function (socket) {
     }
 
     function startKeepAlive() {
+        const https = require("https");
         timeOutKeepAlive = setTimeout(function() {
-            var options = {
-                host: 'https://draw-doodle-tx.herokuapp.com',
-                port: 80,
-                path: '/'
-            };
-            http.get(options, function(res) {
+            https.get("https://draw-doodle-tx.herokuapp.com", function(res) {
                 res.on('data', function(chunk) {
                     try {
                         // optional logging... disable after it's working

@@ -23,6 +23,7 @@
         App.socket = io();
         App.isDraw = true;
         App.timeOutInterval = undefined;
+        App.color = "#ffffff";
 
         App.socket.on('connect', function() {
             App.socket.emit("init", {name: App.userName, point: App.point});
@@ -203,8 +204,8 @@
             // console.log('init', instance);
         }).on('hide', instance => {
             if (App.isDraw == true) {
-                App.ctx.strokeStyle = color.toHEXA();
-                App.socket.emit("changeColor", {color: color.toHEXA().toString()});
+                App.ctx.strokeStyle = App.color;
+                App.socket.emit("changeColor", {color: App.color});
             }
         }).on('show', (color, instance) => {
             // console.log('show', color, instance);
@@ -217,7 +218,9 @@
         }).on('clear', instance => {
             // console.log('clear', instance);
         }).on('change', (color, instance) => {
-            App.pickr.setColor(color.toHEXA().toString());
+            var sColor = color.toHEXA().toString();
+            App.color = sColor;
+            App.pickr.setColor(sColor);
         }).on('changestop', instance => {
             // console.log('changestop', instance);
         }).on('cancel', instance => {

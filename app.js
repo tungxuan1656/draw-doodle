@@ -151,19 +151,15 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("changeColor", function (data) {
-        if (data.color.toLowerCase() != "#ffffff") { color = data; }
         socket.broadcast.emit("changeColor", data);
     });
 
     socket.on("active-pen", function() {
-        console.log("active pen", color);
-        io.emit("changeColor", color);
-        io.emit("changeLineWidth", {lineWidth: 2});
+        io.emit("active-pen");
     });
 
     socket.on("active-eraser", function() {
-        io.emit("changeColor", {color: "#ffffff"});
-        io.emit("changeLineWidth", {lineWidth: 30});
+        io.emit("active-eraser");
     });
 
     socket.on("changeLineWidth", function (data) {
@@ -396,7 +392,7 @@ io.sockets.on("connection", function (socket) {
         fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
             if (!err) {
                 questions = data.trim().split("\n");
-                console.log("load data: " + questions);
+                console.log("load data success ");
                 completion();
             } else {
                 console.log(err);

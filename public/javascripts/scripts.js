@@ -23,7 +23,7 @@
         App.socket = io();
         App.isDraw = true;
         App.timeOutInterval = undefined;
-        App.color = "#ffffff";
+        App.color = "#000000";
 
         App.socket.on('connect', function() {
             App.socket.emit("init", {name: App.userName, point: App.point});
@@ -229,6 +229,30 @@
             // console.log('swatchselect', color, instance);
         });
 
+        App.socket.on("active-pen", function() {
+            var pen = $("#button-pen");
+            var eraser = $("#button-eraser");
+
+            pen.removeClass("button-inactive");
+            eraser.addClass("button-inactive");
+
+            App.pickr.setColor("#000000");
+            App.ctx.strokeStyle = "#000000";
+            App.ctx.lineWidth = 2;
+        });
+
+        App.socket.on("active-eraser", function() {
+            var pen = $("#button-pen");
+            var eraser = $("#button-eraser");
+    
+            eraser.removeClass("button-inactive");
+            pen.addClass("button-inactive");
+
+            App.pickr.setColor("#ffffff");
+            App.ctx.strokeStyle = "#ffffff";
+            App.ctx.lineWidth = 30;
+        });
+
         App.appendToCmts = function(element) {
             var cmtsArea = $("#cmts");
             cmtsArea.append(element);
@@ -326,20 +350,11 @@
     });
 
     $("#button-pen").on("click", function() {
-        var pen = $("#button-pen");
-        var eraser = $("#button-eraser");
-
-        pen.removeClass("button-inactive");
-        eraser.addClass("button-inactive");
+        
         App.socket.emit("active-pen");
     });
 
     $("#button-eraser").on("click", function() {
-        var pen = $("#button-pen");
-        var eraser = $("#button-eraser");
-
-        eraser.removeClass("button-inactive");
-        pen.addClass("button-inactive");
         App.socket.emit("active-eraser");
     });
 

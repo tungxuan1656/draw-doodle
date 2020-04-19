@@ -105,7 +105,7 @@ io.sockets.on("connection", function (socket) {
 
     socket.on("startGame", function (data) {
         if (clients.length < 2) {
-            socket.emit("alert", { message: "Chưa Đủ Người Chơi. Cần Tối Thiểu 3 Người Chơi!" });
+            socket.emit("alert", { message: "Chưa Đủ Người Chơi. Cần Tối Thiểu 2 Người Chơi!" });
         } else {
             isFinishGame = false;
             clients.forEach((client) => {

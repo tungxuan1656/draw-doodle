@@ -111,13 +111,13 @@
         });
 
         App.socket.on("answerQuestion", function(data) {
-            // console.log(data);
+            console.log(data);
             $("#answer").empty();
             $("#answer").append(data.answer);
         });
 
         App.socket.on("answerHide", function(data) {
-            // console.log(data);
+            console.log(data);
             $("#answer").empty();
             $("#answer").append(data.answer);
         });
@@ -201,14 +201,14 @@
         });
 
         App.pickr.on('init', instance => {
-            // console.log('init', instance);
+            console.log('init', instance);
         }).on('hide', instance => {
             if (App.isDraw == true) {
                 App.ctx.strokeStyle = App.color;
                 App.socket.emit("changeColor", {color: App.color});
             }
         }).on('show', (color, instance) => {
-            // console.log('show', color, instance);
+            console.log('show', color, instance);
         }).on('save', (color, instance) => {
             // console.log('save', color, instance);
             // if (App.isDraw == true) {
@@ -216,17 +216,17 @@
             //     App.socket.emit("changeColor", {color: color.toHEXA().toString()});
             // }
         }).on('clear', instance => {
-            // console.log('clear', instance);
+            console.log('clear', instance);
         }).on('change', (color, instance) => {
             var sColor = color.toHEXA().toString();
             App.color = sColor;
             App.pickr.setColor(sColor);
         }).on('changestop', instance => {
-            // console.log('changestop', instance);
+            console.log('changestop', instance);
         }).on('cancel', instance => {
-            // console.log('cancel', instance);
+            console.log('cancel', instance);
         }).on('swatchselect', (color, instance) => {
-            // console.log('swatchselect', color, instance);
+            console.log('swatchselect', color, instance);
         });
 
         App.socket.on("active-pen", function(data) {
@@ -319,7 +319,7 @@
             y = e.pageY;
             type = "dragend";
             sendDraw(x,y,type);
-            // console.log("send dragend");
+            console.log("send dragend");
         }
         $('#canvas')
         .on('mouseup', handle_mouseup)
@@ -330,7 +330,7 @@
 
     $("#button-clear-all").on("click", function() {
         if (App.isDraw == true) {
-            // console.log("clear");
+            console.log("clear");
             App.socket.emit("clear_all", {});
             App.clear_all();
         }
@@ -360,7 +360,7 @@
     });
 
     $(function () {
-        // console.log("init");
+        console.log("init");
         return App.init();
     });
 

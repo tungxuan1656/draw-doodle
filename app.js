@@ -435,6 +435,6 @@ io.sockets.on("connection", function (socket) {
                 console.log("Error: " + err.message);
             });
             startKeepAlive();
-        }, 20 * 60 * 1000);
+        }, 30000);
     }
 });

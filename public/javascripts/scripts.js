@@ -66,7 +66,7 @@
         });
 
         App.socket.on("changeColor", function(data) {
-            // console.log(data.color);
+            console.log(data.color);
             App.pickr.setColor(data.color);
             App.ctx.strokeStyle = data.color;
         });
@@ -211,10 +211,10 @@
             // console.log('show', color, instance);
         }).on('save', (color, instance) => {
             // console.log('save', color, instance);
-            if (App.isDraw == true) {
-                App.ctx.strokeStyle = color.toHEXA();
-                App.socket.emit("changeColor", {color: color.toHEXA().toString()});
-            }
+            // if (App.isDraw == true) {
+            //     App.ctx.strokeStyle = color.toHEXA();
+            //     App.socket.emit("changeColor", {color: color.toHEXA().toString()});
+            // }
         }).on('clear', instance => {
             // console.log('clear', instance);
         }).on('change', (color, instance) => {
@@ -229,16 +229,17 @@
             // console.log('swatchselect', color, instance);
         });
 
-        App.socket.on("active-pen", function() {
+        App.socket.on("active-pen", function(data) {
             var pen = $("#button-pen");
             var eraser = $("#button-eraser");
 
             pen.removeClass("button-inactive");
             eraser.addClass("button-inactive");
 
-            App.pickr.setColor("#000000");
-            App.ctx.strokeStyle = "#000000";
-            App.ctx.lineWidth = 2;
+            App.pickr.setColor(data.color);
+            App.ctx.strokeStyle = data.color;
+            App.ctx.lineWidth = data.lineWidth;
+            App.slider.val(data.lineWidth);
         });
 
         App.socket.on("active-eraser", function() {
@@ -251,6 +252,7 @@
             App.pickr.setColor("#ffffff");
             App.ctx.strokeStyle = "#ffffff";
             App.ctx.lineWidth = 30;
+            App.slider.val(30);
         });
 
         App.appendToCmts = function(element) {
@@ -350,7 +352,6 @@
     });
 
     $("#button-pen").on("click", function() {
-        
         App.socket.emit("active-pen");
     });
 

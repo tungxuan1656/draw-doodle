@@ -52,7 +52,9 @@ var io = require('socket.io')(server);
 var http = require('http'); //importing http
 var timeOutKeepAlive = 0;
 var clients = [];
-var color = {color: "#000000"};
+var color = "#000000";
+var lineWidth = 2;
+var activePen = true;
 var roundNumber = 3;
 var timeRound = 120;
 var startTimeMatch = new Date().getTime() / 1000;
@@ -83,6 +85,8 @@ io.sockets.on("connection", function (socket) {
         console.log("Number of Clients:", clients.length);
         updateUsers();
         appendNotification("Người chơi mới: " + data.name);
+        if (activePen == true) {io.emit("active-pen", {color: color, lineWidth: lineWidth});}
+        else { io.emit("active-eraser"); }
         if (clients.length == 1) {
             download("https://gitlab.com/tungxuan1656/drawdoodle/-/raw/master/dataset?inline=false", "dataset.txt", function () {
                 appendNotification("download finish!");
@@ -151,18 +155,23 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("changeColor", function (data) {
+        if (data.color.toLowerCase() != "#ffffff") { color = data.color; }
+        console.log("change color", data);
         socket.broadcast.emit("changeColor", data);
     });
 
     socket.on("active-pen", function() {
-        io.emit("active-pen");
+        activePen = true;
+        io.emit("active-pen", {color: color, lineWidth: lineWidth});
     });
 
     socket.on("active-eraser", function() {
+        activePen = false;
         io.emit("active-eraser");
     });
 
     socket.on("changeLineWidth", function (data) {
+        lineWidth = data.lineWidth;
         socket.broadcast.emit("changeLineWidth", data);
     });
 

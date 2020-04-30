@@ -74,6 +74,7 @@ var questions = [];
 io.sockets.on("connection", function (socket) {
     console.log(socket.id);
 
+    
     socket.on("init", function (data) {
         console.log("New Client:", data.name, socket.id);
         var host = false;

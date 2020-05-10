@@ -66,6 +66,7 @@ var resultLastMatch = {};
 var isFinishGame = false;
 var inMatch = false;
 var questions = [];
+var oldQuestion = [];
 
 // socket.broadcast là gửi sự kiện đến cho tất cả socket khác trừ đối tượng socket
 // io.emit là gửi sự kiện đến tất cả socket đã kết nối
@@ -322,8 +323,13 @@ io.sockets.on("connection", function (socket) {
     function randomQuestion() {
         var length = questions.length;
         var index = Math.floor(Math.random() * length);
+        while(oldQuestion.includes(index)) {
+            index = Math.floor(Math.random() * length);
+        }
+        oldQuestion.push(index);
         var random = questions[index];
         console.log("Random Question: ", random);
+
         return random;
     }
 
